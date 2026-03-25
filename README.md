@@ -3,6 +3,9 @@
 ## 📊 Overview
 This project is a web-based dashboard that analyzes restaurant sales data using a CSV file.
 
+## Live Website
+https://swatipanda1105.github.io/Test-of-Odisha-analytics-dashboard/
+
 ## 🚀 Features
 - Upload CSV file
 - Sales trend visualization
