@@ -1,12 +1,45 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Taste Of Odisha - Advanced Analytics</title>
+
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* Small UI improvements */
+.helper-text {
+    font-size: 13px;
+    color: gray;
+    margin-top: 5px;
+}
+
+.download-btn {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 8px 14px;
+    background: maroon;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.download-btn:hover {
+    background: #800000;
+}
+
+.instruction {
+    color: maroon;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+</style>
+
 </head>
+
 <body>
 
 <header>
@@ -15,12 +48,35 @@
 
 <div class="container">
 
+<!-- ✅ UPLOAD SECTION -->
 <div class="card">
 <h2>Upload CSV</h2>
+
+<p class="instruction">
+Upload your restaurant sales CSV file to view analytics
+</p>
+
+<!-- ✅ DOWNLOAD SAMPLE -->
+<a href="sample.csv" download class="download-btn">
+⬇ Download Sample CSV
+</a>
+
+<br>
+
+<!-- ✅ FILE INPUT -->
 <input type="file" id="fileInput" accept=".csv">
+
+<!-- ✅ FORMAT GUIDE -->
+<p class="helper-text">
+Format: <b>date, dish, amount</b><br>
+Example: 2026-03-01, Rasgola, 500
+</p>
+
 </div>
 
+
 <div class="grid">
+
 <div class="card">
 <h2>Sales Trend</h2>
 <canvas id="salesChart"></canvas>
@@ -38,12 +94,14 @@
 
 <div class="card">
 <h2>Insights & Conclusion</h2>
-<p id="insights"></p>
+<p id="insights">📊 Upload a CSV file to see insights</p>
 </div>
+
 </div>
 
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
