@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* Small UI improvements */
 .helper-text {
     font-size: 13px;
     color: gray;
@@ -48,37 +47,36 @@
 
 <div class="container">
 
-<!-- ✅ UPLOAD SECTION -->
 <div class="card">
 <h2>Upload CSV</h2>
 
 <p class="instruction">
-Upload your restaurant sales CSV file to view analytics
+1️⃣ Download a sample CSV<br>
+2️⃣ Upload it below to view analytics
 </p>
 
-<!-- ✅ DOWNLOAD SAMPLE -->
 <a href="sample.csv" download class="download-btn">
-⬇ Download Sample CSV
+⬇ Download Sample CSV 1
 </a>
 
 <br>
-
 
 <a href="mysampledata.csv" download class="download-btn">
 ⬇ Download Sample CSV 2
 </a>
 
-<!-- ✅ FILE INPUT -->
-<input type="file" id="fileInput" accept=".csv">
+<br><br>
 
-<!-- ✅ FORMAT GUIDE -->
+<input type="file" id="fileInput">
+
+<p id="fileName" class="helper-text"></p>
+
 <p class="helper-text">
 Format: <b>date, dish, amount</b><br>
 Example: 2026-03-01, Rasgola, 500
 </p>
 
 </div>
-
 
 <div class="grid">
 
