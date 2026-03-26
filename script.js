@@ -2,39 +2,32 @@
     
 let salesChart, dishChart, pieChart;
 
-// ✅ AUTO LOAD CSV FROM GITHUB
-window.addEventListener("DOMContentLoaded", () => {
-    fetch("sample.csv")
-        .then(res => {
-            if (!res.ok) throw new Error("CSV not found");
-            return res.text();
-        })
-        .then(data => {
-            console.log("Auto CSV Loaded");
-            processCSV(data);
-        })
-        .catch(err => {
-            console.log("No default CSV loaded:", err);
-        });
-});
-
-
-// ✅ FILE UPLOAD STILL WORKS
+// ✅ FILE UPLOAD HANDLER
 document.getElementById('fileInput').addEventListener('change', function(e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    // ✅ Only allow CSV
+    if (!file.name.endsWith(".csv")) {
+        alert("Please upload a valid CSV file!");
+        return;
+    }
+
     const reader = new FileReader();
 
     reader.onload = function(evt) {
         processCSV(evt.target.result);
     };
 
-    reader.readAsText(e.target.files[0]);
+    reader.readAsText(file);
 });
 
 
-// ✅ CSV PROCESSING (IMPROVED)
+// ✅ CSV PROCESSING
 function processCSV(data) {
 
-    // Handle Windows + GitHub line endings
     const rows = data.split(/\r?\n/).slice(1);
 
     let salesByDate = {};
@@ -61,8 +54,10 @@ function processCSV(data) {
         dishRevenue[dish] = (dishRevenue[dish] || 0) + val;
     });
 
-    console.log("Sales:", salesByDate);
-    console.log("Dishes:", dishRevenue);
+    if (total === 0) {
+        document.getElementById('insights').innerHTML = "⚠️ No valid data found in CSV!";
+        return;
+    }
 
     renderCharts(salesByDate, dishRevenue);
     generateInsights(salesByDate, dishRevenue, total);
@@ -116,28 +111,25 @@ function renderCharts(salesByDate, dishRevenue) {
 // ✅ INSIGHTS
 function generateInsights(sales, dishes, total) {
 
-    if (Object.keys(sales).length === 0) {
-        document.getElementById('insights').innerHTML = "No valid data found!";
-        return;
-    }
-
     let bestDay = Object.keys(sales).reduce((a, b) => sales[a] > sales[b] ? a : b);
     let bestDish = Object.keys(dishes).reduce((a, b) => dishes[a] > dishes[b] ? a : b);
 
     let avg = Math.round(total / Object.keys(sales).length);
 
     let text = `
+    <b>📊 Insights</b><br><br>
     Total Revenue: ₹${total}<br>
     Average Daily Revenue: ₹${avg}<br>
     Best Performing Day: ${bestDay}<br>
     Most Popular Dish: ${bestDish}<br><br>
 
-    <b>Conclusion:</b><br>
-    Focus more on ${bestDish}.<br>
-    Try to replicate strategies used on ${bestDay}.<br>
+    <b>💡 Suggestions:</b><br>
+    Promote <b>${bestDish}</b> more.<br>
+    Analyze strategies used on <b>${bestDay}</b>.<br>
     Maintain consistent marketing.
     `;
 
     document.getElementById('insights').innerHTML = text;
 }
-    
+
+
