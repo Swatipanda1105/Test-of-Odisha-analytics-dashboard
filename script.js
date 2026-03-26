@@ -1,81 +1,11 @@
 
-    
-let salesChart, dishChart, pieChart;
-
-// ✅ FILE UPLOAD HANDLER
-document.getElementById('fileInput').addEventListener('change', function(e) {
-
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    // Show selected file name
-    document.getElementById('fileName').innerText = "Selected: " + file.name;
-
-    // Validate CSV
-    if (!file.name.toLowerCase().endsWith(".csv")) {
-        alert("Please upload a valid CSV file!");
-        return;
-    }
-
-    document.getElementById('insights').innerHTML = "⏳ Processing file...";
-
-    const reader = new FileReader();
-
-    reader.onload = function(evt) {
-        processCSV(evt.target.result);
-    };
-
-    reader.readAsText(file);
-});
-
-
-// ✅ CSV PROCESSING
-function processCSV(data) {
-
-    const rows = data.split(/\r?\n/).slice(1);
-
-    let salesByDate = {};
-    let dishRevenue = {};
-    let total = 0;
-
-    rows.forEach(r => {
-
-        if (!r.trim()) return;
-
-        const parts = r.split(/[,;]+/).map(x => x.trim());
-
-        if (parts.length < 3) return;
-
-        const date = parts[0];
-        const dish = parts[1];
-        const val = parseInt(parts[2]);
-
-        if (!date || !dish || isNaN(val)) return;
-
-        total += val;
-
-        salesByDate[date] = (salesByDate[date] || 0) + val;
-        dishRevenue[dish] = (dishRevenue[dish] || 0) + val;
-    });
-
-    if (total === 0) {
-        document.getElementById('insights').innerHTML = "⚠️ No valid data found in CSV!";
-        return;
-    }
-
-    renderCharts(salesByDate, dishRevenue);
-    generateInsights(salesByDate, dishRevenue, total);
-}
-
-
-// ✅ CHARTS
-function renderCharts(salesByDate, dishRevenue) {
+ function renderCharts(salesByDate, dishRevenue) {
 
     if (salesChart) salesChart.destroy();
     if (dishChart) dishChart.destroy();
     if (pieChart) pieChart.destroy();
 
+    // ✅ Sales Trend (Line Chart)
     salesChart = new Chart(document.getElementById('salesChart'), {
         type: 'line',
         data: {
@@ -86,9 +16,25 @@ function renderCharts(salesByDate, dishRevenue) {
                 borderColor: "maroon",
                 fill: false
             }]
+        },
+        options: {
+            scales: {
+                y: {
+                    ticks: {
+                        callback: function(value) {
+                            return "₹" + value.toLocaleString();
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: "Revenue (₹)"
+                    }
+                }
+            }
         }
     });
 
+    // ✅ Dish Performance (Bar Chart)
     dishChart = new Chart(document.getElementById('dishChart'), {
         type: 'bar',
         data: {
@@ -98,9 +44,25 @@ function renderCharts(salesByDate, dishRevenue) {
                 data: Object.values(dishRevenue),
                 backgroundColor: "maroon"
             }]
+        },
+        options: {
+            scales: {
+                y: {
+                    ticks: {
+                        callback: function(value) {
+                            return "₹" + value.toLocaleString();
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: "Revenue (₹)"
+                    }
+                }
+            }
         }
     });
 
+    // ✅ Pie Chart (no axis needed)
     pieChart = new Chart(document.getElementById('pieChart'), {
         type: 'pie',
         data: {
@@ -110,29 +72,4 @@ function renderCharts(salesByDate, dishRevenue) {
             }]
         }
     });
-}
-
-
-// ✅ INSIGHTS
-function generateInsights(sales, dishes, total) {
-
-    let bestDay = Object.keys(sales).reduce((a, b) => sales[a] > sales[b] ? a : b);
-    let bestDish = Object.keys(dishes).reduce((a, b) => dishes[a] > dishes[b] ? a : b);
-
-    let avg = Math.round(total / Object.keys(sales).length);
-
-    let text = `
-    <b>📊 Insights</b><br><br>
-    Total Revenue: ₹${total}<br>
-    Average Daily Revenue: ₹${avg}<br>
-    Best Performing Day: ${bestDay}<br>
-    Most Popular Dish: ${bestDish}<br><br>
-
-    <b>💡 Suggestions:</b><br>
-    Promote <b>${bestDish}</b> more.<br>
-    Analyze strategies used on <b>${bestDay}</b>.<br>
-    Maintain consistent marketing.
-    `;
-
-    document.getElementById('insights').innerHTML = text;
 }
