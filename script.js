@@ -9,11 +9,16 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
 
     if (!file) return;
 
-    // ✅ Only allow CSV
-    if (!file.name.endsWith(".csv")) {
+    // Show selected file name
+    document.getElementById('fileName').innerText = "Selected: " + file.name;
+
+    // Validate CSV
+    if (!file.name.toLowerCase().endsWith(".csv")) {
         alert("Please upload a valid CSV file!");
         return;
     }
+
+    document.getElementById('insights').innerHTML = "⏳ Processing file...";
 
     const reader = new FileReader();
 
@@ -131,5 +136,3 @@ function generateInsights(sales, dishes, total) {
 
     document.getElementById('insights').innerHTML = text;
 }
-
-
