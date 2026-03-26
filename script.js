@@ -1,5 +1,25 @@
+
+    
 let salesChart, dishChart, pieChart;
 
+// ✅ AUTO LOAD CSV FROM GITHUB
+window.addEventListener("DOMContentLoaded", () => {
+    fetch("sample.csv")
+        .then(res => {
+            if (!res.ok) throw new Error("CSV not found");
+            return res.text();
+        })
+        .then(data => {
+            console.log("Auto CSV Loaded");
+            processCSV(data);
+        })
+        .catch(err => {
+            console.log("No default CSV loaded:", err);
+        });
+});
+
+
+// ✅ FILE UPLOAD STILL WORKS
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const reader = new FileReader();
 
@@ -10,18 +30,17 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     reader.readAsText(e.target.files[0]);
 });
 
+
+// ✅ CSV PROCESSING (IMPROVED)
 function processCSV(data) {
 
-    
-    const rows = data.split('\n').slice(1);
-
-    console.log("Rows:", rows); 
+    // Handle Windows + GitHub line endings
+    const rows = data.split(/\r?\n/).slice(1);
 
     let salesByDate = {};
     let dishRevenue = {};
     let total = 0;
 
-    
     rows.forEach(r => {
 
         if (!r.trim()) return;
@@ -49,6 +68,8 @@ function processCSV(data) {
     generateInsights(salesByDate, dishRevenue, total);
 }
 
+
+// ✅ CHARTS
 function renderCharts(salesByDate, dishRevenue) {
 
     if (salesChart) salesChart.destroy();
@@ -91,6 +112,8 @@ function renderCharts(salesByDate, dishRevenue) {
     });
 }
 
+
+// ✅ INSIGHTS
 function generateInsights(sales, dishes, total) {
 
     if (Object.keys(sales).length === 0) {
@@ -110,10 +133,11 @@ function generateInsights(sales, dishes, total) {
     Most Popular Dish: ${bestDish}<br><br>
 
     <b>Conclusion:</b><br>
-    Focus more on promoting ${bestDish}.<br>
+    Focus more on ${bestDish}.<br>
     Try to replicate strategies used on ${bestDay}.<br>
     Maintain consistent marketing.
     `;
 
     document.getElementById('insights').innerHTML = text;
 }
+    
